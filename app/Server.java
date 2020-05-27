@@ -1,34 +1,51 @@
 import java.io.*;
 import java.net.*;
+
 public class Server {
-    public static final int PORT = 8080;
+    int port;
+    ServerSocket server_socket;
+    Socket socket;
+    String out_file;
+    PrintWriter file_writer;
+    BufferedReader socket_input;
+    PrintWriter socket_output;
+
+
+    Server(String out_file) throws IOException {
+        this.port          = 8080;
+        this.server_socket = new ServerSocket(port);
+        this.file_writer   = new PrintWriter(new BufferedWriter(new FileWriter(out_file)));
+        this.out_file      = out_file;
+    }
+
+    public void listen() throws IOException {
+        this.socket        = server_socket.accept();
+        this.socket_input  = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        this.socket_output = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+    }
+
+    public void read_file() throws IOException {
+        String line;
+        while((line = socket_input.readLine()) != null){
+            file_writer.println(line);
+        }
+    }
+
+    public void close() throws IOException {
+        file_writer.close();
+        socket.close();
+        server_socket.close();
+    }
     
 	public static void main(String[] args) throws IOException {
-		ServerSocket s = new ServerSocket(PORT);
-        System.out.println("Started: " + s);
         String outfile = "./out.txt";
-        
+        Server server  = new Server(outfile);
+
         try {
-            Socket socket = s.accept();
-            try {
-                System.out.println("socket = " + socket);
-
-                String line;
-                PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(outfile)));
-                BufferedReader in  = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                PrintWriter    out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
-
-                while((line = in.readLine()) != null){
-                    writer.println(line);
-                    System.out.println(line);
-                }
-                writer.close();
-            } finally {
-                System.out.println("closing...");
-                socket.close();
-            } 
+            server.listen();
+            server.read_file();
         } finally {
-            s.close();
-        }
+            server.close();
+	   }
 	}
 }
