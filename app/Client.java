@@ -6,13 +6,13 @@ public class Client {
         System.out.println("addr = " + addr);
         
         Socket socket   = new Socket(addr, 8080);
-        String testfile = "./test.txt";
+        String sendfile = args[0];
 
         try {
             System.out.println("Connection accepted: " + socket);
             
             String line;
-            BufferedReader reader = new BufferedReader(new FileReader(testfile));
+            BufferedReader reader = new BufferedReader(new FileReader(sendfile));
             BufferedReader in     = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter out       = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
             
