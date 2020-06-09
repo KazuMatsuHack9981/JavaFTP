@@ -2,6 +2,7 @@ import java.io.*;
 import java.util.Scanner;
 
 
+
 public class CommandLine {
     Client client;
 
@@ -12,16 +13,16 @@ public class CommandLine {
 
     private void activate() {
         System.out.println("[*] Starting JavaFTP...\n");
-        System.out.println("    _                    _____ _____ ____  ");
-        System.out.println("    | | __ ___   ____ _  |  ___|_   _|  _ \\ ");
+        System.out.println("\u001b[00;33m    _                    \u001b[00;31m_____ _____ ____  \u001b[00m");
+        System.out.println("\u001b[00;33m    | | __ ___   ____ _  \u001b[00;31m|  ___|_   _|  _ \\ \u001b[00m");
         System.out.println(" _  | |/ _` \\ \\ / / _` | | |_    | | | |_) |");
-        System.out.println("| |_| | (_| |\\ V / (_| | |  _|   | | |  __/ ");
-        System.out.println(" \\___/ \\__,_| \\_/ \\__,_| |_|     |_| |_|    ");
+        System.out.println("\u001b[00;33m| |_| | (_| |\\ V / (_| | \u001b[00;31m|  _|   | | |  __/ \u001b[00m");
+        System.out.println("\u001b[00;33m \\___/ \\__,_| \\_/ \\__,_| \u001b[00;31m|_|     |_| |_|    \u001b[00m");
         System.out.println("\n  * version 1.0 created by Kazuki Matsuo * \n\n");
     }
 
     private void exit() {
-        System.out.println("\n[*] exiting program...\n");
+        System.out.println("\n\n[*] exiting program...\n");
         try{client.close();}
         catch (IOException e) {}
         System.exit(0);
@@ -49,11 +50,11 @@ public class CommandLine {
         Scanner scanner = new Scanner(System.in);
 
         cli.activate();
-
+        
         while(true) {
             System.out.print(String.format("JavaFTP > "));
             String input = scanner.nextLine();
             cli.execute(input);
-        } 
+        }
     }
 }
