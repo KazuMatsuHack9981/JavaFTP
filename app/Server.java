@@ -33,6 +33,16 @@ public class Server {
         return out_file;
     }
 
+    public void send(String file) throws IOException {
+        String line;
+        BufferedReader file_reader = new BufferedReader(new FileReader("./datas/"+file));
+        socket_output.println(file);
+        while((line = file_reader.readLine()) != null) {
+            socket_output.println(line);
+        }
+        file_reader.close();
+    }
+
     public void close() throws IOException {
         socket.close();
         server_socket.close();
@@ -46,6 +56,6 @@ public class Server {
             server.read_file();
         } finally {
             server.close();
-	   }
+        }
 	}
 }

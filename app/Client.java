@@ -2,11 +2,11 @@ import java.io.*;
 import java.net.*;
 
 public class Client {
-    InetAddress    addr;
-    int            port;
-    Socket         socket;
-    BufferedReader socket_input;
-    PrintWriter    socket_output;
+    InetAddress      addr;
+    int              port;
+    Socket           socket;
+    BufferedReader   socket_input;
+    PrintWriter      socket_output;
 
     Client() throws IOException {
         this.addr          = InetAddress.getByName("localhost");
@@ -14,6 +14,19 @@ public class Client {
         this.socket        = new Socket(addr, port);
         this.socket_input  = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.socket_output = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+    }
+
+    public String read_file() throws IOException {
+        String line;
+        String out_file = socket_input.readLine();
+        PrintWriter file_writer = new PrintWriter(new BufferedWriter(new FileWriter(out_file)));
+        
+        while((line = socket_input.readLine()) != null){
+            file_writer.println(line);
+        }
+
+        file_writer.close();
+        return out_file;
     }
     
     public void send(String file) throws IOException {
@@ -38,6 +51,6 @@ public class Client {
             client.send(sendfile);
         } finally {
             client.close();
-	   }
+        }
 	}
 }
