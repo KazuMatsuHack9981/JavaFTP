@@ -30,8 +30,14 @@ public class CommandLine {
 
     private void put(String sendfile) {
         try {client.send(sendfile);}
-        catch (IOException e) {System.out.print("\u001b[00;31m[-]\u001b[00m put failed");}
-        finally {System.out.println(String.format("\u001b[00;32m[+]\u001b[00m successfully sent %s", sendfile));}
+        catch (IOException e) {System.out.println("\u001b[00;31m[-]\u001b[00m put failed"); return;}
+        System.out.println(String.format("\u001b[00;32m[+]\u001b[00m successfully sent %s", sendfile));
+    }
+
+    private void get(String getfile) {
+        try {client.get_file(getfile);}
+        catch (IOException e) {System.out.println("\u001b[00;31m[-]\u001b[00m get failed"); return;}
+        System.out.println(String.format("\u001b[00;32m[+]\u001b[00m successfully received %s", getfile));
     }
 
     private void execute(String input) {
@@ -40,6 +46,11 @@ public class CommandLine {
         if(cmd[0].equals("exit") || cmd[0].equals("quit")) exit();
         if(cmd[0].equals("put")) {
             if(cmd.length == 2) put(cmd[1]);
+            else if(cmd.length < 2) System.out.println("\u001b[00;31m[-]\u001b[00m need to specify filename");
+            else System.out.println("\u001b[00;31m[-]\u001b[00m filename must not include space between");
+        }
+        if(cmd[0].equals("get")) {
+            if(cmd.length == 2) get(cmd[1]);
             else if(cmd.length < 2) System.out.println("\u001b[00;31m[-]\u001b[00m need to specify filename");
             else System.out.println("\u001b[00;31m[-]\u001b[00m filename must not include space between");
         }

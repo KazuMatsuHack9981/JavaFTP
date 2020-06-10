@@ -20,7 +20,7 @@ public class Server {
         this.socket_output = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
     }
 
-    public String read_file() throws IOException {
+    public String get_file() throws IOException {
         String line;
         String out_file = "./datas/" + socket_input.readLine();
         PrintWriter file_writer = new PrintWriter(new BufferedWriter(new FileWriter(out_file)));
@@ -33,13 +33,18 @@ public class Server {
         return out_file;
     }
 
-    public void send(String file) throws IOException {
+    public void send() throws IOException {
         String line;
-        BufferedReader file_reader = new BufferedReader(new FileReader("./datas/"+file));
-        socket_output.println(file);
+        String file_name = socket_input.readLine();
+        
+        BufferedReader file_reader = new BufferedReader(new FileReader("./datas/"+file_name));
+        
+        socket_output.println(file_name);
+
         while((line = file_reader.readLine()) != null) {
             socket_output.println(line);
         }
+        socket_output.println("|EOF|");
         file_reader.close();
     }
 
@@ -47,13 +52,36 @@ public class Server {
         socket.close();
         server_socket.close();
     }
+
+    public void recv_command() {
+        String cmd="none";
+        try {
+            cmd = socket_input.readLine();
+
+            if(cmd.equals("get")) {
+                System.out.println("[*] recieved get");
+                send();
+            }
+            else if(cmd.equals("put")) {
+                System.out.println("[*] recieved put");
+                get_file();
+            }
+            else {
+                System.out.println(cmd);
+            }
+            return;
+        }
+        catch (IOException e){}
+    }
     
 	public static void main(String[] args) throws IOException {
-        Server server  = new Server();
+        Server server = new Server();
 
         try {
             server.listen();
-            server.read_file();
+            while(true) {
+                server.recv_command();
+            }
         } finally {
             server.close();
         }

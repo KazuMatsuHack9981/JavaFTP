@@ -16,20 +16,25 @@ public class Client {
         this.socket_output = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
     }
 
-    public String read_file() throws IOException {
+    public void get_file(String getfile) throws IOException {
+        socket_output.println("get");
+
         String line;
+        
+        socket_output.println(getfile);
         String out_file = socket_input.readLine();
         PrintWriter file_writer = new PrintWriter(new BufferedWriter(new FileWriter(out_file)));
         
         while((line = socket_input.readLine()) != null){
+            if(line.equals("|EOF|")) break;
             file_writer.println(line);
         }
-
         file_writer.close();
-        return out_file;
     }
     
     public void send(String file) throws IOException {
+        socket_output.println("put");
+        
         String line;
         BufferedReader file_reader = new BufferedReader(new FileReader(file));
         socket_output.println(file);
