@@ -48,6 +48,14 @@ public class Client {
         socket.close();
     }
 
+    public String signup(String username, String password) throws IOException {
+        socket_output.println("signup");
+        socket_output.println(username);
+        socket_output.println(password);
+        String status = socket_input.readLine();
+        return status;
+    }
+
 	public static void main(String[] args) throws IOException {
         String sendfile = args[0];
         Client client   = new Client();

@@ -53,6 +53,15 @@ public class Server {
         server_socket.close();
     }
 
+    public String signup(String username, String password) {
+        File dir = new File(String.format("./datas/ %s", username));
+        if(dir.exists()) return "exists";
+        else {
+            dir.mkdir();
+            return "success";
+        }
+    }
+
     public void recv_command() {
         String cmd="none";
         try {
@@ -65,6 +74,13 @@ public class Server {
             else if(cmd.equals("put")) {
                 System.out.println("[*] recieved put");
                 get_file();
+            }
+            else if(cmd.equals("signup")) {
+                System.out.println("[*] recieved signup");
+                String username = socket_input.readLine();
+                String password = socket_input.readLine();
+                String status = signup(username, password);
+                socket_output.println(status);
             }
             else {
                 System.out.println(cmd);

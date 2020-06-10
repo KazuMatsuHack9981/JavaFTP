@@ -40,6 +40,16 @@ public class CommandLine {
         System.out.println(String.format("\u001b[00;32m[+]\u001b[00m successfully received %s", getfile));
     }
 
+    private void signup(String username, String password) {
+        try {
+            String status = client.signup(username, password);
+            if(status.equals("success")) {System.out.println(String.format("\u001b[00;32m[+]\u001b[00m signup succeeded as %s:%s", username, password));}
+            else if(status.equals("exists")) {System.out.println("\u001b[00;31m[-]\u001b[00m that username already exists");}
+            else {System.out.println(status); System.out.println("\u001b[00;31m[-]\u001b[00m signup failed");}
+        }
+        catch (IOException e) {System.out.println("\u001b[00;31m[-]\u001b[00m signup failed");}
+    }
+
     private void execute(String input) {
         String[] cmd = input.split(" ", 0);
         
@@ -53,6 +63,10 @@ public class CommandLine {
             if(cmd.length == 2) get(cmd[1]);
             else if(cmd.length < 2) System.out.println("\u001b[00;31m[-]\u001b[00m need to specify filename");
             else System.out.println("\u001b[00;31m[-]\u001b[00m filename must not include space between");
+        }
+        if(cmd[0].equals("signup")) {
+            if(cmd.length == 3) signup(cmd[1], cmd[2]);
+            else System.out.println("\u001b[00;31m[-]\u001b[00m invalid format (signup [username] [password])");
         }
     }
 
