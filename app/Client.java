@@ -55,6 +55,14 @@ public class Client {
         String status = socket_input.readLine();
         return status;
     }
+    
+    public String login(String username, String password) throws IOException {
+        socket_output.println("login");
+        socket_output.println(username);
+        socket_output.println(password);
+        String status = socket_input.readLine();
+        return status;
+    }
 
 	public static void main(String[] args) throws IOException {
         String sendfile = args[0];

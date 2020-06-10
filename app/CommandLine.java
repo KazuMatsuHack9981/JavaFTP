@@ -45,9 +45,20 @@ public class CommandLine {
             String status = client.signup(username, password);
             if(status.equals("success")) {System.out.println(String.format("\u001b[00;32m[+]\u001b[00m signup succeeded as %s:%s", username, password));}
             else if(status.equals("exists")) {System.out.println("\u001b[00;31m[-]\u001b[00m that username already exists");}
-            else {System.out.println(status); System.out.println("\u001b[00;31m[-]\u001b[00m signup failed");}
+            else {System.out.println("\u001b[00;31m[-]\u001b[00m signup failed");}
         }
         catch (IOException e) {System.out.println("\u001b[00;31m[-]\u001b[00m signup failed");}
+    }
+
+    private void login(String username, String password) {
+        try {
+            String status = client.login(username, password);
+            if(status.equals("success")) {System.out.println(String.format("\u001b[00;32m[+]\u001b[00m login succeeded as %s", username));}
+            else if(status.equals("incorrect_password")) {System.out.println("\u001b[00;31m[-]\u001b[00m password is incorrect");}
+            else if(status.equals("user_not_found")) {System.out.println("\u001b[00;31m[-]\u001b[00m user not found");}
+            else {System.out.println("\u001b[00;31m[-]\u001b[00m login failed");}
+        }
+        catch (IOException e) {System.out.println("\u001b[00;31m[-]\u001b[00m login failed");}
     }
 
     private void execute(String input) {
@@ -67,6 +78,10 @@ public class CommandLine {
         if(cmd[0].equals("signup")) {
             if(cmd.length == 3) signup(cmd[1], cmd[2]);
             else System.out.println("\u001b[00;31m[-]\u001b[00m invalid format (signup [username] [password])");
+        }
+        if(cmd[0].equals("login")) {
+            if(cmd.length == 3) login(cmd[1], cmd[2]);
+            else System.out.println("\u001b[00;31m[-]\u001b[00m invalid format (login [username] [password])");
         }
     }
 
