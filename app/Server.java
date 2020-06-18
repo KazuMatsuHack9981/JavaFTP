@@ -7,11 +7,15 @@ public class Server {
     Socket socket;
     BufferedReader socket_input;
     PrintWriter socket_output;
+    String current_user;
+    String out_dir;
 
 
     Server() throws IOException {
         this.port          = 8080;
         this.server_socket = new ServerSocket(port);
+        this.current_user  = "|none|";
+        this.out_dir       = "./datas/";
     }
 
     public void listen() throws IOException {
@@ -22,7 +26,7 @@ public class Server {
 
     public String get_file() throws IOException {
         String line;
-        String out_file = "./datas/" + socket_input.readLine();
+        String out_file = out_dir + socket_input.readLine();
         PrintWriter file_writer = new PrintWriter(new BufferedWriter(new FileWriter(out_file)));
         
         while((line = socket_input.readLine()) != null){
@@ -37,7 +41,7 @@ public class Server {
         String line;
         String file_name = socket_input.readLine();
         
-        BufferedReader file_reader = new BufferedReader(new FileReader("./datas/"+file_name));
+        BufferedReader file_reader = new BufferedReader(new FileReader(out_dir+file_name));
         
         socket_output.println(file_name);
 
@@ -54,7 +58,7 @@ public class Server {
     }
 
     public String signup(String username, String password) {
-        File dir = new File(String.format("./datas/ %s", username));
+        File dir = new File(String.format("./datas/%s", username));
         String user_file = "./userdatas/users.csv";
         
         if(dir.exists()) return "exists";
@@ -83,6 +87,8 @@ public class Server {
                     if(user_pass[0].equals(username)) {
                         if(user_pass[1].equals(password)){
                             file_reader.close();
+                            current_user = username;
+                            out_dir = ("./datas/" + username + "/");
                             return "success";
                         }
                         else{
