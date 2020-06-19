@@ -30,6 +30,7 @@ public class Server {
         PrintWriter file_writer = new PrintWriter(new BufferedWriter(new FileWriter(out_file)));
         
         while((line = socket_input.readLine()) != null){
+            if(line.equals("|EOF|")) break;
             file_writer.println(line);
         }
 

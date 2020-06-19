@@ -41,6 +41,7 @@ public class Client {
         while((line = file_reader.readLine()) != null) {
             socket_output.println(line);
         }
+        socket_output.println("|EOF|");
         file_reader.close();
     }
 
