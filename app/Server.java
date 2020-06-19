@@ -10,6 +10,7 @@ public class Server {
     String current_user;
     String out_dir;
     MessageModule message;
+    Status status;
 
 
     Server() throws IOException {
@@ -18,6 +19,7 @@ public class Server {
         this.current_user  = "|none|";
         this.out_dir       = "./datas/";
         this.message       = new MessageModule();
+        this.status        = new Status();
     }
 
     public void listen() throws IOException {
@@ -64,7 +66,7 @@ public class Server {
         File dir = new File(String.format("./datas/%s", username));
         String user_file = "./userdatas/users.csv";
         
-        if(dir.exists()) return "exists";
+        if(dir.exists()) return status.file_exists;
         else {
             try {
                 PrintWriter file_writer = new PrintWriter(new BufferedWriter(new FileWriter(user_file, true)));
@@ -72,10 +74,10 @@ public class Server {
                 dir.mkdir();
                 file_writer.println(String.format("%s,%s", username, password));
                 file_writer.close();
-                return "success";
+                return status.success;
             }
-            catch (FileNotFoundException e) {return "FileNotFound";}
-            catch (IOException e) {return "IOException";}
+            catch (FileNotFoundException e) {return status.fail;}
+            catch (IOException e) {return status.fail;}
         }
     }
 
@@ -92,31 +94,31 @@ public class Server {
                             file_reader.close();
                             current_user = username;
                             out_dir = ("./datas/" + username + "/");
-                            return "success";
+                            return status.success;
                         }
                         else{
                             file_reader.close();
-                            return "incorrect_password";
+                            return status.incorrect_password;
                         }
                     }
                 }
                 file_reader.close();
-                return "user_not_found";
+                return status.user_not_found;
             }
             catch (IOException e) {
-                return "fail";
+                return status.fail;
             }
         }
-        catch(FileNotFoundException e) {return "FileNotFound";}
+        catch(FileNotFoundException e) {return status.fail;}
     }
 
     public String delete() throws IOException {
         String filename = socket_input.readLine();
         File file = new File(String.format(out_dir+filename));
 
-        if(!file.exists()) return "file_not_found";
-        if(file.delete()) return "success";
-        return "fail";
+        if(!file.exists()) return status.file_not_found;
+        if(file.delete()) return status.success;
+        return status.fail;
     }
 
     public void recv_command() {
@@ -136,20 +138,20 @@ public class Server {
                 message.print_log("recieved signup");
                 String username = socket_input.readLine();
                 String password = socket_input.readLine();
-                String status = signup(username, password);
-                socket_output.println(status);
+                String stats = signup(username, password);
+                socket_output.println(stats);
             }
             if(cmd.equals("login")) {
                 message.print_log("recieved login");
                 String username = socket_input.readLine();
                 String password = socket_input.readLine();
-                String status   = login(username, password);
-                socket_output.println(status);    
+                String stats = login(username, password);
+                socket_output.println(stats);    
             }
             if(cmd.equals("delete")) {
                 message.print_log("recieved delete");
-                String status = delete();
-                socket_output.println(status);
+                String stats = delete();
+                socket_output.println(stats);
             }
             return;
         }

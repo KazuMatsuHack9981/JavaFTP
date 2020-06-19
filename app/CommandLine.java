@@ -6,11 +6,13 @@ import java.util.Scanner;
 public class CommandLine {
     Client client;
     MessageModule message;
+    Status status;
 
     CommandLine() {
         try {
-            client = new Client();
+            client  = new Client();
             message = new MessageModule();
+            status  = new Status();
         }
         catch (IOException e) {}
     }
@@ -35,7 +37,6 @@ public class CommandLine {
         try {client.send(sendfile);}
         catch (IOException e) {message.print_err("put failed"); return;}
         message.print_ok(String.format("successfully sent %s", sendfile));
-        System.out.println();
     }
 
     private void get(String getfile) {
@@ -46,9 +47,9 @@ public class CommandLine {
 
     private void signup(String username, String password) {
         try {
-            String status = client.signup(username, password);
-            if(status.equals("success")) {message.print_ok(String.format("signup succeeded as %s:%s", username, password));}
-            else if(status.equals("exists")) {message.print_err("that username already exists");}
+            String stats = client.signup(username, password);
+            if(stats.equals(status.success)) {message.print_ok(String.format("signup succeeded as %s:%s", username, password));}
+            else if(stats.equals(status.file_exists)) {message.print_err("that username already exists");}
             else {message.print_err("signup failed");}
         }
         catch (IOException e) {message.print_err("signup failed");}
@@ -56,10 +57,10 @@ public class CommandLine {
 
     private void login(String username, String password) {
         try {
-            String status = client.login(username, password);
-            if(status.equals("success")) {message.print_ok(String.format("login succeeded as %s", username));}
-            else if(status.equals("incorrect_password")) {message.print_err("password is incorrect");}
-            else if(status.equals("user_not_found")) {message.print_err("user not found");}
+            String stats = client.login(username, password);
+            if(stats.equals(status.success)) {message.print_ok(String.format("login succeeded as %s", username));}
+            else if(stats.equals(status.incorrect_password)) {message.print_err("password is incorrect");}
+            else if(stats.equals(status.user_not_found)) {message.print_err("user not found");}
             else {message.print_err("login failed");}
         }
         catch (IOException e) {message.print_err("login failed");}
@@ -67,9 +68,9 @@ public class CommandLine {
 
     private void delete(String filename) {
         try {
-            String status = client.delete(filename);
-            if(status.equals("success")) {message.print_ok(String.format("successfully deleted %s", filename));}
-            else if(status.equals("file_not_found")) {message.print_err("file not found");}
+            String stats = client.delete(filename);
+            if(stats.equals(status.success)) {message.print_ok(String.format("successfully deleted %s", filename));}
+            else if(stats.equals(status.file_not_found)) {message.print_err("file not found");}
             else {message.print_err("delete failed");}
         }
         catch (IOException e) {message.print_err("delete failed");}

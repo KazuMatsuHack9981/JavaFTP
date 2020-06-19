@@ -53,22 +53,22 @@ public class Client {
         socket_output.println("signup");
         socket_output.println(username);
         socket_output.println(password);
-        String status = socket_input.readLine();
-        return status;
+        String stats = socket_input.readLine();
+        return stats;
     }
     
     public String login(String username, String password) throws IOException {
         socket_output.println("login");
         socket_output.println(username);
         socket_output.println(password);
-        String status = socket_input.readLine();
-        return status;
+        String stats = socket_input.readLine();
+        return stats;
     }
 
     public String delete(String filename) throws IOException {
         socket_output.println("delete");
         socket_output.println(filename);
-        String status = socket_input.readLine();
-        return status;
+        String stats = socket_input.readLine();
+        return stats;
     }
 }
