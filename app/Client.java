@@ -71,15 +71,4 @@ public class Client {
         String status = socket_input.readLine();
         return status;
     }
-
-	public static void main(String[] args) throws IOException {
-        String sendfile = args[0];
-        Client client   = new Client();
-
-        try {
-            client.send(sendfile);
-        } finally {
-            client.close();
-        }
-	}
 }
