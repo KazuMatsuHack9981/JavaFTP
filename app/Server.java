@@ -7,11 +7,15 @@ public class Server {
     Socket socket;
     BufferedReader socket_input;
     PrintWriter socket_output;
+    String current_user;
+    String out_dir;
 
 
     Server() throws IOException {
         this.port          = 8080;
         this.server_socket = new ServerSocket(port);
+        this.current_user  = "|none|";
+        this.out_dir       = "./datas/";
     }
 
     public void listen() throws IOException {
@@ -22,10 +26,11 @@ public class Server {
 
     public String get_file() throws IOException {
         String line;
-        String out_file = "./datas/" + socket_input.readLine();
+        String out_file = out_dir + socket_input.readLine();
         PrintWriter file_writer = new PrintWriter(new BufferedWriter(new FileWriter(out_file)));
         
         while((line = socket_input.readLine()) != null){
+            if(line.equals("|EOF|")) break;
             file_writer.println(line);
         }
 
@@ -37,7 +42,7 @@ public class Server {
         String line;
         String file_name = socket_input.readLine();
         
-        BufferedReader file_reader = new BufferedReader(new FileReader("./datas/"+file_name));
+        BufferedReader file_reader = new BufferedReader(new FileReader(out_dir+file_name));
         
         socket_output.println(file_name);
 
@@ -53,6 +58,65 @@ public class Server {
         server_socket.close();
     }
 
+    public String signup(String username, String password) {
+        File dir = new File(String.format("./datas/%s", username));
+        String user_file = "./userdatas/users.csv";
+        
+        if(dir.exists()) return "exists";
+        else {
+            try {
+                PrintWriter file_writer = new PrintWriter(new BufferedWriter(new FileWriter(user_file, true)));
+
+                dir.mkdir();
+                file_writer.println(String.format("%s,%s", username, password));
+                file_writer.close();
+                return "success";
+            }
+            catch (FileNotFoundException e) {return "FileNotFound";}
+            catch (IOException e) {return "IOException";}
+        }
+    }
+
+    public String login(String username, String password) {
+        try {
+            BufferedReader file_reader = new BufferedReader(new FileReader("./userdatas/users.csv"));
+            String line;
+
+            try {
+                while((line = file_reader.readLine()) != null) {
+                    String[] user_pass = line.split(",", 0);
+                    if(user_pass[0].equals(username)) {
+                        if(user_pass[1].equals(password)){
+                            file_reader.close();
+                            current_user = username;
+                            out_dir = ("./datas/" + username + "/");
+                            return "success";
+                        }
+                        else{
+                            file_reader.close();
+                            return "incorrect_password";
+                        }
+                    }
+                }
+                file_reader.close();
+                return "user_not_found";
+            }
+            catch (IOException e) {
+                return "fail";
+            }
+        }
+        catch(FileNotFoundException e) {return "FileNotFound";}
+    }
+
+    public String delete() throws IOException {
+        String filename = socket_input.readLine();
+        File file = new File(String.format(out_dir+filename));
+
+        if(!file.exists()) return "file_not_found";
+        if(file.delete()) return "success";
+        return "fail";
+    }
+
     public void recv_command() {
         String cmd="none";
         try {
@@ -62,12 +126,28 @@ public class Server {
                 System.out.println("[*] recieved get");
                 send();
             }
-            else if(cmd.equals("put")) {
+            if(cmd.equals("put")) {
                 System.out.println("[*] recieved put");
                 get_file();
             }
-            else {
-                System.out.println(cmd);
+            if(cmd.equals("signup")) {
+                System.out.println("[*] recieved signup");
+                String username = socket_input.readLine();
+                String password = socket_input.readLine();
+                String status = signup(username, password);
+                socket_output.println(status);
+            }
+            if(cmd.equals("login")) {
+                System.out.println("[*] recieved login");
+                String username = socket_input.readLine();
+                String password = socket_input.readLine();
+                String status   = login(username, password);
+                socket_output.println(status);    
+            }
+            if(cmd.equals("delete")) {
+                System.out.println("[*] recieved delete");
+                String status = delete();
+                socket_output.println(status);
             }
             return;
         }

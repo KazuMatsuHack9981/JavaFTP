@@ -40,19 +40,60 @@ public class CommandLine {
         System.out.println(String.format("\u001b[00;32m[+]\u001b[00m successfully received %s", getfile));
     }
 
+    private void signup(String username, String password) {
+        try {
+            String status = client.signup(username, password);
+            if(status.equals("success")) {System.out.println(String.format("\u001b[00;32m[+]\u001b[00m signup succeeded as %s:%s", username, password));}
+            else if(status.equals("exists")) {System.out.println("\u001b[00;31m[-]\u001b[00m that username already exists");}
+            else {System.out.println("\u001b[00;31m[-]\u001b[00m signup failed");}
+        }
+        catch (IOException e) {System.out.println("\u001b[00;31m[-]\u001b[00m signup failed");}
+    }
+
+    private void login(String username, String password) {
+        try {
+            String status = client.login(username, password);
+            if(status.equals("success")) {System.out.println(String.format("\u001b[00;32m[+]\u001b[00m login succeeded as %s", username));}
+            else if(status.equals("incorrect_password")) {System.out.println("\u001b[00;31m[-]\u001b[00m password is incorrect");}
+            else if(status.equals("user_not_found")) {System.out.println("\u001b[00;31m[-]\u001b[00m user not found");}
+            else {System.out.println("\u001b[00;31m[-]\u001b[00m login failed");}
+        }
+        catch (IOException e) {System.out.println("\u001b[00;31m[-]\u001b[00m login failed");}
+    }
+
+    private void delete(String filename) {
+        try {
+            String status = client.delete(filename);
+            if(status.equals("success")) {System.out.println(String.format("\u001b[00;32m[+]\u001b[00m successfully deleted %s", filename));}
+            else if(status.equals("file_not_found")) {System.out.println("\u001b[00;31m[-]\u001b[00m file not found");}
+            else {System.out.println("\u001b[00;31m[-]\u001b[00m delete failed");}
+        }
+        catch (IOException e) {System.out.println("\u001b[00;31m[-]\u001b[00m delete failed");}
+    }
+
     private void execute(String input) {
         String[] cmd = input.split(" ", 0);
         
         if(cmd[0].equals("exit") || cmd[0].equals("quit")) exit();
         if(cmd[0].equals("put")) {
             if(cmd.length == 2) put(cmd[1]);
-            else if(cmd.length < 2) System.out.println("\u001b[00;31m[-]\u001b[00m need to specify filename");
-            else System.out.println("\u001b[00;31m[-]\u001b[00m filename must not include space between");
+            else System.out.println("\u001b[00;31m[-]\u001b[00m invalid format (put [filename]])");
         }
         if(cmd[0].equals("get")) {
             if(cmd.length == 2) get(cmd[1]);
-            else if(cmd.length < 2) System.out.println("\u001b[00;31m[-]\u001b[00m need to specify filename");
-            else System.out.println("\u001b[00;31m[-]\u001b[00m filename must not include space between");
+            else System.out.println("\u001b[00;31m[-]\u001b[00m invalid format (get [filename]])");
+        }
+        if(cmd[0].equals("signup")) {
+            if(cmd.length == 3) signup(cmd[1], cmd[2]);
+            else System.out.println("\u001b[00;31m[-]\u001b[00m invalid format (signup [username] [password])");
+        }
+        if(cmd[0].equals("login")) {
+            if(cmd.length == 3) login(cmd[1], cmd[2]);
+            else System.out.println("\u001b[00;31m[-]\u001b[00m invalid format (login [username] [password])");
+        }
+        if(cmd[0].equals("delete")) {
+            if(cmd.length == 2) delete(cmd[1]);
+            else System.out.println("\u001b[00;31m[-]\u001b[00m invalid format (delete [filename]])");
         }
     }
 
