@@ -9,6 +9,7 @@ public class Server {
     PrintWriter socket_output;
     String current_user;
     String out_dir;
+    MessageModule message;
 
 
     Server() throws IOException {
@@ -16,6 +17,7 @@ public class Server {
         this.server_socket = new ServerSocket(port);
         this.current_user  = "|none|";
         this.out_dir       = "./datas/";
+        this.message       = new MessageModule();
     }
 
     public void listen() throws IOException {
@@ -123,29 +125,29 @@ public class Server {
             cmd = socket_input.readLine();
 
             if(cmd.equals("get")) {
-                System.out.println("[*] recieved get");
+                message.print_log("recieved get");
                 send();
             }
             if(cmd.equals("put")) {
-                System.out.println("[*] recieved put");
+                message.print_log("recieved put");
                 get_file();
             }
             if(cmd.equals("signup")) {
-                System.out.println("[*] recieved signup");
+                message.print_log("recieved signup");
                 String username = socket_input.readLine();
                 String password = socket_input.readLine();
                 String status = signup(username, password);
                 socket_output.println(status);
             }
             if(cmd.equals("login")) {
-                System.out.println("[*] recieved login");
+                message.print_log("recieved login");
                 String username = socket_input.readLine();
                 String password = socket_input.readLine();
                 String status   = login(username, password);
                 socket_output.println(status);    
             }
             if(cmd.equals("delete")) {
-                System.out.println("[*] recieved delete");
+                message.print_log("recieved delete");
                 String status = delete();
                 socket_output.println(status);
             }
