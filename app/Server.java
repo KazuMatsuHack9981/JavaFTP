@@ -108,6 +108,15 @@ public class Server {
         catch(FileNotFoundException e) {return "FileNotFound";}
     }
 
+    public String delete() throws IOException {
+        String filename = socket_input.readLine();
+        File file = new File(String.format(out_dir+filename));
+
+        if(!file.exists()) return "file_not_found";
+        if(file.delete()) return "success";
+        return "fail";
+    }
+
     public void recv_command() {
         String cmd="none";
         try {
@@ -134,6 +143,11 @@ public class Server {
                 String password = socket_input.readLine();
                 String status   = login(username, password);
                 socket_output.println(status);    
+            }
+            if(cmd.equals("delete")) {
+                System.out.println("[*] recieved delete");
+                String status = delete();
+                socket_output.println(status);
             }
             return;
         }

@@ -65,6 +65,13 @@ public class Client {
         return status;
     }
 
+    public String delete(String filename) throws IOException {
+        socket_output.println("delete");
+        socket_output.println(filename);
+        String status = socket_input.readLine();
+        return status;
+    }
+
 	public static void main(String[] args) throws IOException {
         String sendfile = args[0];
         Client client   = new Client();
