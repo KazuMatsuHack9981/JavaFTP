@@ -1,9 +1,7 @@
 import java.io.*;
 import java.net.*;
 
-public class Server {
-    int port;
-    ServerSocket server_socket;
+public class Server extends Thread {
     Socket socket;
     BufferedReader socket_input;
     PrintWriter socket_output;
@@ -11,19 +9,18 @@ public class Server {
     String out_dir;
     MessageModule message;
     Status status;
+    static int num_of_thread = 0;
 
 
-    Server() throws IOException {
-        this.port          = 8080;
-        this.server_socket = new ServerSocket(port);
+    Server(Socket socket) throws IOException {
+        this.socket        = socket;
         this.current_user  = "|none|";
         this.out_dir       = "./datas/";
         this.message       = new MessageModule();
         this.status        = new Status();
     }
 
-    public void listen() throws IOException {
-        this.socket        = server_socket.accept();
+    public void create_stream() throws IOException {
         this.socket_input  = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.socket_output = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
     }
@@ -55,11 +52,6 @@ public class Server {
         }
         socket_output.println("|EOF|");
         file_reader.close();
-    }
-
-    public void close() throws IOException {
-        socket.close();
-        server_socket.close();
     }
 
     public String signup(String username, String password) {
@@ -121,11 +113,16 @@ public class Server {
         return status.fail;
     }
 
-    public void recv_command() {
+    public String recv_command() {
         String cmd="none";
         try {
             cmd = socket_input.readLine();
 
+            if(cmd==null) {
+                num_of_thread -= 1;
+                message.print_log(String.format("closing... thread remaining : %s", String.valueOf(num_of_thread)));
+                return status.done;
+            }
             if(cmd.equals("get")) {
                 message.print_log("recieved get");
                 send();
@@ -153,21 +150,23 @@ public class Server {
                 String stats = delete();
                 socket_output.println(stats);
             }
-            return;
+            return status.not_done;
+        }
+        catch (IOException e){}
+        return status.not_done;
+    } 
+
+    @Override
+    public void run() {
+        try {
+            num_of_thread += 1;
+            message.print_log(String.format("creating thread%s...", String.valueOf(num_of_thread)));
+            create_stream();
+            while(true) {
+                String stats = recv_command();
+                if(stats.equals(status.done)) break;
+            }
         }
         catch (IOException e){}
     }
-    
-	public static void main(String[] args) throws IOException {
-        Server server = new Server();
-
-        try {
-            server.listen();
-            while(true) {
-                server.recv_command();
-            }
-        } finally {
-            server.close();
-        }
-	}
 }
