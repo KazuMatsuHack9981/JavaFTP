@@ -10,16 +10,19 @@
 
 ```
 
+<br/>
+
 JavaFTP is a simple FTP server written in Java to understand architecture of server-client application and data transmission using sockets. This application does not use any third-party package, only default Java environment is required. Unlike other server-client application, user must run server program in order to use this application.
 ![](./sample.gif)
 
+<br/>
 
-# Requirement
+## Requirement
 * either windows/macos/linux PC
 * Java Environment
 
 
-# Installation
+## Installation
 Just clone this repository by
 ```
 git clone https://github.com/KazuMatsuHack9981/JavaFTP.git
@@ -27,13 +30,13 @@ git clone https://github.com/KazuMatsuHack9981/JavaFTP.git
 you don't have to do anything else.
 
 
-# Structure
+## Structure
 server and client will both run on the same directory. Server side files are in `datas/` and list of user is in `userdatas/`. client files are in `JavaFTP/` directory. User can be created by `signup` command but you cannot delete user by command. Each user has their own directory in `datas/` and if you login, the files are uploaded/downloaded within this directory.
 
 
-# Usage
+## Usage
 
-## Server/Client setup
+### Server/Client setup
 First, launch the server program by
 ```
 java ServerController
@@ -46,7 +49,7 @@ java CommandLine
 if both server and client program runned correctly, you will see "JavaFTP" banner popup on client screen and "[*] creating thread1..." log showing up at server log.
 
 
-## Commands
+### Commands
 JavaFTP supports below.  
 please DO NOT exit the program by CTRL-C.
 ```
