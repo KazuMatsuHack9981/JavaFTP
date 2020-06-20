@@ -5,7 +5,7 @@ public class MessageModule {
         System.out.println(" _  | |/ _` \\ \\ / / _` | | |_    | | | |_) |");
         System.out.println("\u001b[00;33m| |_| | (_| |\\ V / (_| | \u001b[00;31m|  _|   | | |  __/ \u001b[00m");
         System.out.println("\u001b[00;33m \\___/ \\__,_| \\_/ \\__,_| \u001b[00;31m|_|     |_| |_|    \u001b[00m");
-        System.out.println("\n  * version 1.0 created by Kazuki Matsuo * \n\n");
+        System.out.println("\n  * version 1.0 created for report * \n\n");
     }
 
     public void newline(int n) {
