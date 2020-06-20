@@ -5,6 +5,7 @@ public class ServerController {
     public static final int port = 8080;
 
     public static void main(String args[]) {
+        System.out.println("[*] JavaFTP Server started...");
         ServerSocket server_socket = null;
         try {
             server_socket = new ServerSocket(port);

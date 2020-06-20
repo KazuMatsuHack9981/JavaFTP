@@ -2,14 +2,14 @@ import java.io.*;
 import java.net.*;
 
 public class Server extends Thread {
-    Socket socket;
-    BufferedReader socket_input;
-    PrintWriter socket_output;
-    String current_user;
-    String out_dir;
-    MessageModule message;
-    Status status;
-    static int num_of_thread = 0;
+    Socket          socket;
+    BufferedReader  socket_input;
+    PrintWriter     socket_output;
+    String          current_user;
+    String          out_dir;
+    MessageModule   message;
+    Status          status;
+    static int      num_of_thread = 0;
 
 
     Server(Socket socket) throws IOException {
@@ -42,7 +42,6 @@ public class Server extends Thread {
     public synchronized void send() throws IOException {
         String line;
         String file_name = socket_input.readLine();
-        
         BufferedReader file_reader = new BufferedReader(new FileReader(out_dir+file_name));
         
         socket_output.println(file_name);
@@ -68,8 +67,14 @@ public class Server extends Thread {
                 file_writer.close();
                 return status.success;
             }
-            catch (FileNotFoundException e) {return status.fail;}
-            catch (IOException e) {return status.fail;}
+            catch (FileNotFoundException e) {
+                message.print_err("FileNotFoundException in 'signup'");
+                return status.fail;
+            }
+            catch (IOException e) {
+                message.print_err("IOException in 'signup'");
+                return status.fail;
+            }
         }
     }
 
@@ -98,10 +103,14 @@ public class Server extends Thread {
                 return status.user_not_found;
             }
             catch (IOException e) {
+                message.print_err("IOException in 'login'");
                 return status.fail;
             }
         }
-        catch(FileNotFoundException e) {return status.fail;}
+        catch(FileNotFoundException e) {
+            message.print_err("FileNotFoundException in 'login'");
+            return status.fail;
+        }
     }
 
     public synchronized String delete() throws IOException {
@@ -110,6 +119,7 @@ public class Server extends Thread {
 
         if(!file.exists()) return status.file_not_found;
         if(file.delete()) return status.success;
+        message.print_err("failed to delete file in 'delete'");
         return status.fail;
     }
 
@@ -152,7 +162,7 @@ public class Server extends Thread {
             }
             return status.not_done;
         }
-        catch (IOException e){}
+        catch (IOException e){message.print_err("IOException in 'recv_command'");}
         return status.not_done;
     } 
 
@@ -167,6 +177,6 @@ public class Server extends Thread {
                 if(stats.equals(status.done)) break;
             }
         }
-        catch (IOException e){}
+        catch (IOException e){message.print_err("IOException in 'run'");}
     }
 }
