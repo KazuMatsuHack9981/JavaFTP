@@ -25,7 +25,7 @@ public class Server extends Thread {
         this.socket_output = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
     }
 
-    public String get_file() throws IOException {
+    public synchronized String get_file() throws IOException {
         String line;
         String out_file = out_dir + socket_input.readLine();
         PrintWriter file_writer = new PrintWriter(new BufferedWriter(new FileWriter(out_file)));
@@ -39,7 +39,7 @@ public class Server extends Thread {
         return out_file;
     }
 
-    public void send() throws IOException {
+    public synchronized void send() throws IOException {
         String line;
         String file_name = socket_input.readLine();
         
@@ -54,7 +54,7 @@ public class Server extends Thread {
         file_reader.close();
     }
 
-    public String signup(String username, String password) {
+    public synchronized String signup(String username, String password) {
         File dir = new File(String.format("./datas/%s", username));
         String user_file = "./userdatas/users.csv";
         
@@ -104,7 +104,7 @@ public class Server extends Thread {
         catch(FileNotFoundException e) {return status.fail;}
     }
 
-    public String delete() throws IOException {
+    public synchronized String delete() throws IOException {
         String filename = socket_input.readLine();
         File file = new File(String.format(out_dir+filename));
 
