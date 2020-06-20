@@ -1,6 +1,17 @@
 # JavaFTP
-![](./sample.gif)
+```
+     _                    _____ _____ ____  
+    | | __ ___   ____ _  |  ___|_   _|  _ \ 
+ _  | |/ _` \ \ / / _` | | |_    | | | |_) |
+| |_| | (_| |\ V / (_| | |  _|   | | |  __/ 
+ \___/ \__,_| \_/ \__,_| |_|     |_| |_|
+
+  * version 1.0 created for report *
+
+```
+
 JavaFTP is a simple FTP server written in Java to understand architecture of server-client application and data transmission using sockets. This application does not use any third-party package, only default Java environment is required. Unlike other server-client application, user must run server program in order to use this application.
+![](./sample.gif)
 
 
 # Requirement
