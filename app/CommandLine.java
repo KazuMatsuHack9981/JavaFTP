@@ -4,9 +4,9 @@ import java.util.Scanner;
 
 
 public class CommandLine {
-    Client client;
-    MessageModule message;
-    Status status;
+    Client         client;
+    MessageModule  message;
+    Status         status;
 
     CommandLine() {
         try {

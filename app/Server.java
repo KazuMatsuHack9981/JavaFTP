@@ -2,14 +2,14 @@ import java.io.*;
 import java.net.*;
 
 public class Server extends Thread {
-    Socket socket;
-    BufferedReader socket_input;
-    PrintWriter socket_output;
-    String current_user;
-    String out_dir;
-    MessageModule message;
-    Status status;
-    static int num_of_thread = 0;
+    Socket          socket;
+    BufferedReader  socket_input;
+    PrintWriter     socket_output;
+    String          current_user;
+    String          out_dir;
+    MessageModule   message;
+    Status          status;
+    static int      num_of_thread = 0;
 
 
     Server(Socket socket) throws IOException {
@@ -42,7 +42,6 @@ public class Server extends Thread {
     public synchronized void send() throws IOException {
         String line;
         String file_name = socket_input.readLine();
-        
         BufferedReader file_reader = new BufferedReader(new FileReader(out_dir+file_name));
         
         socket_output.println(file_name);
@@ -97,9 +96,7 @@ public class Server extends Thread {
                 file_reader.close();
                 return status.user_not_found;
             }
-            catch (IOException e) {
-                return status.fail;
-            }
+            catch (IOException e) {return status.fail;}
         }
         catch(FileNotFoundException e) {return status.fail;}
     }
