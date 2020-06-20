@@ -67,8 +67,14 @@ public class Server extends Thread {
                 file_writer.close();
                 return status.success;
             }
-            catch (FileNotFoundException e) {return status.fail;}
-            catch (IOException e) {return status.fail;}
+            catch (FileNotFoundException e) {
+                message.print_err("FileNotFoundException in 'signup'");
+                return status.fail;
+            }
+            catch (IOException e) {
+                message.print_err("IOException in 'signup'");
+                return status.fail;
+            }
         }
     }
 
@@ -96,9 +102,15 @@ public class Server extends Thread {
                 file_reader.close();
                 return status.user_not_found;
             }
-            catch (IOException e) {return status.fail;}
+            catch (IOException e) {
+                message.print_err("IOException in 'login'");
+                return status.fail;
+            }
         }
-        catch(FileNotFoundException e) {return status.fail;}
+        catch(FileNotFoundException e) {
+            message.print_err("FileNotFoundException in 'login'");
+            return status.fail;
+        }
     }
 
     public synchronized String delete() throws IOException {
@@ -107,6 +119,7 @@ public class Server extends Thread {
 
         if(!file.exists()) return status.file_not_found;
         if(file.delete()) return status.success;
+        message.print_err("failed to delete file in 'delete'");
         return status.fail;
     }
 
@@ -149,7 +162,7 @@ public class Server extends Thread {
             }
             return status.not_done;
         }
-        catch (IOException e){}
+        catch (IOException e){message.print_err("IOException in 'recv_command'");}
         return status.not_done;
     } 
 
@@ -164,6 +177,6 @@ public class Server extends Thread {
                 if(stats.equals(status.done)) break;
             }
         }
-        catch (IOException e){}
+        catch (IOException e){message.print_err("IOException in 'run'");}
     }
 }
